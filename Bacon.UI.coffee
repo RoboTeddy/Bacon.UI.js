@@ -68,3 +68,18 @@ Bacon.UI.hash = (defaultValue) ->
     (if !!document.location.hash then document.location.hash else defaultValue)
   defaultValue = "" if defaultValue is `undefined`
   $(window).asEventStream("hashchange").map(getHash).toProperty(getHash()).skipDuplicates()
+
+Bacon.UI.isFullScreen = do ->
+  fullScreenEventNames = [
+    'webkitfullscreenchange',
+    'mozfullscreenchange',
+    'fullscreenchange',
+  ]
+  fullScreenElementNames = [
+    'mozFullScreenElement',
+    'webkitCurrentFullScreenElement',
+    'fullScreenElement',
+  ]
+  $(document).asEventStream(fullScreenEventNames.join(' '))
+    .map(-> _.any(fullScreenElementNames, (name) -> document[name]))
+    .toProperty(false)
