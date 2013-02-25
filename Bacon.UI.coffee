@@ -70,16 +70,9 @@ Bacon.UI.hash = (defaultValue) ->
   $(window).asEventStream("hashchange").map(getHash).toProperty(getHash()).skipDuplicates()
 
 Bacon.UI.isFullScreen = do ->
-  fullScreenEventNames = [
-    'webkitfullscreenchange',
-    'mozfullscreenchange',
-    'fullscreenchange',
-  ]
-  fullScreenElementNames = [
-    'mozFullScreenElement',
-    'webkitCurrentFullScreenElement',
-    'fullScreenElement',
-  ]
-  $(document).asEventStream(fullScreenEventNames.join(' '))
-    .map(-> _.any(fullScreenElementNames, (name) -> document[name]))
-    .toProperty(false)
+    events = 'webkitfullscreenchange mozfullscreenchange fullscreenchange'
+    return $(document).asEventStream(events)
+      .map(-> document.mozFullScreenElement or
+        document.webkitCurrentFullScreenElement or
+        document.fullScreenElement)
+      .toProperty(false)
